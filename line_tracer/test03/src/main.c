@@ -43,111 +43,29 @@ void turn_right_t(short speed, unsigned int msec);
 // メイン関数
 //--------------------------------------------------------------------
 int main(void) {
-	char cmd;
-	int speed = 8000;
-	int msec = 3000;
-	int old_speed = 0;
-	int old_msec = 0;
-
+	int speed = 10000;
+	//int msec = 3000;
 	init_syscall();
 	init_adc();
 	init_motor2();
+	init_led();
 
-	printf("-----\n");
-	printf("*** Motor Control TEST2 ***\n");
-	printf("-----\n");
+	set_led_orange(LED_ON);
+	while (get_button_black());
+	while (!get_button_black());
+	set_led_orange(LED_OFF);
+	set_led_green(LED_ON);
+
     while(1) {
-    	printf("input command:");
-    	scanf("%c", &cmd);
-    	printf("\n");
 
-    	switch(cmd){
-    	case 'a':
-    		forward(speed);
-        	printf("> Forward\n");
-    		break;
-    	case 'b':
-    		back(speed);
-        	printf("> Back\n");
-    		break;
-    	case 'c':
+    	if(get_left_line_sensor() < 100){
     		turn_left(speed);
-        	printf("> Turn Left\n");
-    		break;
-    	case 'd':
+    	}
+    	else if(get_right_line_sensor() < 100){
     		turn_right(speed);
-        	printf("> Turn Right\n");
-    		break;
-    	case 'e':
-    		stop();
-        	printf("> Stop\n");
-    		break;
-
-    	case 'A':
-    		forward_t(speed, msec);
-        	printf("> Forward\n");
-    		break;
-    	case 'B':
-    		back_t(speed, msec);
-        	printf("> Back\n");
-    		break;
-    	case 'C':
-    		turn_left_t(speed, msec);
-        	printf("> Turn Left\n");
-    		break;
-    	case 'D':
-    		turn_right_t(speed, msec);
-        	printf("> Turn Right\n");
-    		break;
-    	case 'E':
-    		stop();
-        	printf("> Stop\n");
-    		break;
-
-    	case 'f':
-    		old_speed = speed;
-    		scanf("%d", &speed);
-    		printf("> Speed Changed : %d -> %d\n", old_speed, speed);
-    		break;
-    	case 'g':
-    		old_msec = msec;
-    		scanf("%d", &msec);
-    		printf("> Time Changed : %d -> %d\n", old_msec, msec);
-    		break;
-
-    	/*課題11-1*/
-    	case '1':
-    		printf("> kadai 11-1\n");
-    		forward_t(speed, 1000);
-    		turn_right_t(speed, 2000);
-    		back_t(speed, 1500);
-    		break;
-    	case '2':
-    		printf("> kadai 11-2\n");
-    		for(int i=0;i<4;i++){
-    		forward_t(speed, 1000);
-    		turn_right_t(speed, 1000);
-    		}
-    		break;
-    	case '3':
-    		printf("> kadai 11-3\n");
-    		for(int i=0;i<2;i++){
-    		forward_t(speed, 1500);
-    		turn_right_t(speed, 2000);
-    		}
-    		break;
-    	case '4':
-    		while(1){
-    			if(get_left_line_sensor() > 500){
-    				turn_left(speed);
-    			}
-    			else if(get_right_line_sensor() > 500){
-    				turn_right(speed);
-    			}
-    			else{
-    				forward(speed);
-    			}
-    		}
+    	}
+    	else{
+    		forward(speed);
     	}
     }
 
